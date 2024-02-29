@@ -18,11 +18,6 @@ struct Todo: Identifiable, Hashable {
     let status: TodoStatus
 }
 
-var todos: [Todo] = [
-    Todo(title: "Buy groceries", status: .pending),
-    Todo(title: "Finish homework", status: .pending),
-]
-
 struct StatusIndicator: View {
     var status: TodoStatus
 
@@ -49,9 +44,10 @@ struct StatusIndicator: View {
 
 struct AddTodoForm: View {
     @State private var todoTitle: String = ""
+    @State private var contentView = ContentView()
     
     private func addTodo() {
-        todos.append(Todo(title: todoTitle, status: .pending))
+        contentView.todos.append(Todo(title: todoTitle, status: .pending))
     }
     
     var body: some View {
@@ -65,6 +61,12 @@ struct AddTodoForm: View {
 }
 
 struct ContentView: View {
+    @State private var todoTitle: String = ""
+    @State var todos: [Todo] = [
+        Todo(title: "Buy groceries", status: .pending),
+        Todo(title: "Finish homework", status: .pending),
+    ]
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             List(todos) { todo in
@@ -72,11 +74,21 @@ struct ContentView: View {
                     .font(.title)
                 StatusIndicator(status: todo.status)
             }
-            AddTodoForm()
+//            AddTodoForm()
+            
+            TextField("New Todo", text: $todoTitle)
+            Button(action: addTodo) {
+                Text("Add")
+            }
         }
         .padding()
         .navigationTitle("Todo Details")
     }
+    
+    private func addTodo() {
+        todos.append(Todo(title: todoTitle, status: .pending))
+    }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {
